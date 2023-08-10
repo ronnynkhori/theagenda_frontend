@@ -11,7 +11,8 @@ pipeline {
 
         stage('Build') {
             steps {
-                // Install npm dependencies and build the Angular project
+                // Install npm dependencies and build the Angular project4
+                sh 'npm install -g @angular/cli'
                 sh 'npm install'
                 sh 'npm run build'
             }
