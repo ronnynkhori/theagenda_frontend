@@ -16,8 +16,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                // Install npm dependencies and build the Angular project4
-                sh 'npm install -g @angular/cli'
+                // Install npm dependencies and build the Angular project
                 sh 'npm install'
                 sh 'npm run build'
             }
@@ -25,23 +24,12 @@ pipeline {
 
         stage('Deploy to Digital Ocean') {
             steps {
-                // Copy the built files to your Digital Ocean server using SSH
-                sshPublisher(
-                    continueOnError: false,
-                    failOnError: true,
-                    publishers: [
-                        sshPublisherDesc(
-                            configName: 'DigitalOceanSSH', // Name of your SSH configuration in Jenkins
-                            transfers: [
-                                sshTransfer(
-                                    sourceFiles: 'dist/**', // Assuming your built files are in the 'dist' folder
-                                    removePrefix: 'dist/',
-                                    remoteDirectory: '/theagenda' // Change to your Digital Ocean directory
-                                )
-                            ]
-                        )
-                    ]
-                )
+                script {
+                    // Copy the built files to your Digital Ocean server using SSH
+                    sshagent(credentials: ['DigitalOceanSSH']) {
+                        sh 'scp -r dist/* root@164.92.135.84:/theagenda'
+                    }
+                }
             }
         }
     }
