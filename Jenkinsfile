@@ -32,7 +32,7 @@ pipeline {
                             sh 'scp -r -o StrictHostKeyChecking=no nginx.conf root@164.92.135.84:/theagenda'
                         }
                     } catch (Exception e) {
-                        currentBuild.result = 'FAILURE'
+                       
                         error("Deployment to Digital Ocean failed: ${e.message}")
                     }
                 }
