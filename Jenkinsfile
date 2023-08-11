@@ -26,10 +26,12 @@ pipeline {
         stage('Deploy to Digital Ocean') {
             steps {
                         sshagent(credentials: [SSH_KEY]) {
-                           
-                            sh 'scp -r -o StrictHostKeyChecking=no dist root@164.92.135.84:/theagenda'
-                            sh 'scp -r -o StrictHostKeyChecking=no Dockerfile root@164.92.135.84:/theagenda'
-                            sh 'scp -r -o StrictHostKeyChecking=no nginx.conf root@164.92.135.84:/theagenda'
+                            // Create the /theagenda directory if it doesn't exist
+                            sh 'ssh -o StrictHostKeyChecking=no rnkhori@164.92.135.84 mkdir -p /theagenda'
+
+                            sh 'scp -r -o StrictHostKeyChecking=no dist rnkhori@164.92.135.84:/theagenda'
+                            sh 'scp -r -o StrictHostKeyChecking=no Dockerfile rnkhori@164.92.135.84:/theagenda'
+                            sh 'scp -r -o StrictHostKeyChecking=no nginx.conf rnkhori@164.92.135.84:/theagenda'
                         }
             }
         }
