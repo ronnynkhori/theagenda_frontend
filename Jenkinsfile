@@ -3,7 +3,11 @@ pipeline {
 
     tools {
         // Use the Node.js installation defined in Jenkins
-        nodejs "Node"
+        nodejs 'Node'
+    }
+
+    environment {
+        SSH_KEY = credentials('DigitalOceanSSH') // Replace 'DigitalOceanSSHKey' with your actual SSH key credential ID
     }
 
     stages {
@@ -16,35 +20,34 @@ pipeline {
 
         stage('Build') {
             steps {
-                // Install npm dependencies and build the Angular project4
+                // Install npm dependencies and build the Angular project
                 sh 'npm install -g @angular/cli'
                 sh 'npm install'
                 sh 'npm run build'
             }
         }
+
+        stage('Deploy to Digital Ocean') {
+            steps {
+                script {
+                    // Start the SSH agent and add the private key
+                    sshagent(credentials: [SSH_KEY]) {
+                        // Copy files to the remote server using SSH
+                        sh 'scp -r -o StrictHostKeyChecking=no dist/* root@164.92.135.84:/theagenda'
+                        sh 'scp -r -o StrictHostKeyChecking=no Dockerfile root@164.92.135.84:/theagenda'
+                        sh 'scp -r -o StrictHostKeyChecking=no nginx.conf root@164.92.135.84:/theagenda'
+                    }
+                }
+            }
+        }
     }
 
     post {
-        always {
-            script {
-                // Publish files over SSH using the configured SSH server
-                sshPublisher(
-                    continueOnError: false,
-                    failOnError: true,
-                    publishers: [
-                        sshPublisherDesc(
-                            configName: 'DigitalOceanSSH', // Name of your SSH configuration in Jenkins
-                            transfers: [
-                                sshTransfer(
-                                    sourceFiles: 'dist/**', // Assuming your built files are in the 'dist' folder
-                                    removePrefix: 'dist/', // Remove this prefix from source path
-                                    remoteDirectory: '/theagenda' // Remote directory on the Digital Ocean server
-                                )
-                            ]
-                        )
-                    ]
-                )
-            }
+        success {
+            slackSend color: 'good', message: "'DEPLOYMENT SUCCESSFUL'"
+        }
+        failure {
+            slackSend color: 'danger', message: "'DEPLOYMENT FAILED'"
         }
     }
 }
