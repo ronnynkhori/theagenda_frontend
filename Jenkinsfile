@@ -5,9 +5,9 @@ pipeline {
         nodejs 'Node'
     }
 
-     environment {
+    environment {
         SSH_KEY = credentials('DigitalOceanSSH') // Replace 'DigitalOceanSSHKey' with your actual SSH key credential ID
-     }
+    }
 
     stages {
         stage('Checkout') {
@@ -34,11 +34,11 @@ pipeline {
                             sh 'scp -r -o StrictHostKeyChecking=no nginx.conf root@164.92.135.84:/theagenda'
                         }
             }
-
         }
+    }
 
     post {
         success { slackSend color:'good', message:'DEPLOYMENT SUCCESSFULL' }
         failure { slackSend color:'danger', message:'DEPLOYMENT FAILED' }
     }
-    }
+}
