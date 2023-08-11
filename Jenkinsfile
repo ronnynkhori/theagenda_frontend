@@ -25,14 +25,12 @@ pipeline {
 
         stage('Deploy to Digital Ocean') {
             steps {
-                script {
                     // Start the SSH agent and add the private key
                     sshagent(credentials: ['DigitalOceanSSH']) {
                         // Copy files to the remote server using SSH
-                        sh 'scp -r -o StrictHostKeyChecking=no dist/* root@164.92.135.84:/theagenda'
+                        sh 'scp -r -o StrictHostKeyChecking=no dist root@164.92.135.84:/theagenda'
                         sh 'scp -r -o StrictHostKeyChecking=no Dockerfile root@164.92.135.84:/theagenda'
                         sh 'scp -r -o StrictHostKeyChecking=no nginx.conf root@164.92.135.84:/theagenda'
-                    }
                 }
             }
         }
