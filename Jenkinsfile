@@ -5,10 +5,6 @@ pipeline {
         nodejs 'Node'
     }
 
-    environment {
-        SSH_KEY = credentials('DigitalOceanSSH') // Replace 'DigitalOceanSSHKey' with your actual SSH key credential ID
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -25,7 +21,7 @@ pipeline {
 
         stage('Deploy to Digital Ocean') {
             steps {
-                        sshagent(credentials: [SSH_KEY]) {
+                        sshagent(credentials: ['DigitalOceanSSH']) {
                             // Create the /theagenda directory if it doesn't exist
                             sh 'ssh -o StrictHostKeyChecking=no rnkhori@164.92.135.84 mkdir -p /theagenda'
 
