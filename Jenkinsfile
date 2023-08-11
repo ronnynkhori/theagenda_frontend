@@ -7,8 +7,7 @@ pipeline {
 
      environment {
         SSH_KEY = credentials('DigitalOceanSSH') // Replace 'DigitalOceanSSHKey' with your actual SSH key credential ID
-    }
-
+     }
 
     stages {
         stage('Checkout') {
@@ -26,8 +25,6 @@ pipeline {
 
         stage('Deploy to Digital Ocean') {
             steps {
-                script {
-                    try {
                         sshagent(credentials: [SSH_KEY]) {
                             // Create the /theagenda directory if it doesn't exist
                             sh 'ssh -o StrictHostKeyChecking=no root@164.92.135.84 mkdir -p /theagenda'
@@ -36,17 +33,12 @@ pipeline {
                             sh 'scp -r -o StrictHostKeyChecking=no Dockerfile root@164.92.135.84:/theagenda'
                             sh 'scp -r -o StrictHostKeyChecking=no nginx.conf root@164.92.135.84:/theagenda'
                         }
-                    } catch (Exception e) {
-                       
-                        error("Deployment to Digital Ocean failed: ${e.message}")
-                    }
-                }
             }
+
         }
-    }
 
     post {
         success { slackSend color:'good', message:'DEPLOYMENT SUCCESSFULL' }
         failure { slackSend color:'danger', message:'DEPLOYMENT FAILED' }
     }
-}
+    }
