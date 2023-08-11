@@ -42,13 +42,7 @@ pipeline {
     }
 
     post {
-        always {
-            catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                script {
-                    slackSend color: currentBuild.result == 'FAILURE' ? 'danger' : 'good',
-                              message: currentBuild.result == 'FAILURE' ? "'DEPLOYMENT FAILED'" : "'DEPLOYMENT SUCCESSFUL'"
-                }
-            }
-        }
+        success { slackSend color:'good', message:'DEPLOYMENT SUCCESSFULL' }
+        failure { slackSend color:'danger', message:'DEPLOYMENT FAILED' }
     }
 }
