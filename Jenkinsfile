@@ -28,6 +28,8 @@ pipeline {
                             sh 'scp -r -o StrictHostKeyChecking=no dist rnkhori@164.92.135.84:~/theagenda'
                             sh 'scp -r -o StrictHostKeyChecking=no Dockerfile rnkhori@164.92.135.84:~/theagenda'
                             sh 'scp -r -o StrictHostKeyChecking=no nginx.conf rnkhori@164.92.135.84:~/theagenda'
+
+                            sh "ssh rnkhori@164.92.135.84 'cd ~/theagenda && docker compose up -d --force-recreate --build theagenda'"
                         }
             }
         }
