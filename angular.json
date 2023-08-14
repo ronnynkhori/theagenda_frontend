@@ -93,7 +93,7 @@
                             "browserTarget": "agenda_web:build:production"
                         },
                         "development": {
-                            "browserTarget": "agenda_web:build:development"
+                            "browserTarget": "fuse:build:development"
                         }
                     },
                     "defaultConfiguration": "development"
