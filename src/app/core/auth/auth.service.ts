@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { AuthUtils } from 'app/core/auth/auth.utils';
 import { UserService } from 'app/core/user/user.service';
 import { environment } from 'environments/environment';
-import { catchError, Observable, of, switchMap, throwError } from 'rxjs';
+import { catchError, Observable, of, switchMap, tap, throwError } from 'rxjs';
 
 
 const SIGIN = environment.apiBaseUrl + '/api/auth/v1/login'
@@ -43,61 +43,34 @@ export class AuthService
         return localStorage.getItem('accessToken') ?? '';
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
 
-    /**
-     * Forgot password
-     *
-     * @param email
-     */
     forgotPassword(email: string): Observable<any>
     {
         return this._httpClient.post('api/auth/forgot-password', email);
     }
 
-    /**
-     * Reset password
-     *
-     * @param password
-     */
+
     resetPassword(password: string): Observable<any>
     {
         return this._httpClient.post('api/auth/reset-password', password);
     }
 
-    /**
-     * Sign in
-     *
-     * @param credentials
-     */
-    signIn(credentials: { email: string; password: string }): Observable<any>
-    {
-        // Throw error, if the user is already logged in
-        if ( this._authenticated )
-        {
+
+    signIn(credentials: { email: string; password: string }): Observable<any> {
+        if (this._authenticated) {
             return throwError('User is already logged in.');
         }
-
-        return this._httpClient.post('api/auth/sign-in', credentials).pipe(
-            switchMap((response: any) =>
-            {
-                // Store the access token in the local storage
+    
+        return this._httpClient.post(SIGIN, credentials).pipe(
+            tap((response: any) => {
+                console.log("response", response);
                 this.accessToken = response.accessToken;
-
-                // Set the authenticated flag to true
                 this._authenticated = true;
-
-                // Store the user on the user service
-              //  this._userService.user = response.user;
-
-                // Return a new observable with the response
-                return of(response);
-            }),
+                this._userService.user = response;
+            })
         );
     }
-
+    
     /**
      * Sign in using the access token
      */
@@ -158,9 +131,9 @@ export class AuthService
      *
      * @param user
      */
-    signUp(user: { name: string; email: string; password: string; company: string }): Observable<any>
+    signUp(user: { name: string; email: string; password: string;}): Observable<any>
     {
-        return this._httpClient.post('api/auth/sign-up', user);
+        return this._httpClient.post(SIGUP, user);
     }
 
     /**
@@ -190,11 +163,11 @@ export class AuthService
             return of(false);
         }
 
-        // Check the access token expire date
-        if ( AuthUtils.isTokenExpired(this.accessToken) )
-        {
-            return of(false);
-        }
+        // // Check the access token expire date
+        // if ( AuthUtils.isTokenExpired(this.accessToken) )
+        // {
+        //     return of(false);
+        // }
 
         // If the access token exists, and it didn't expire, sign in using it
         return this.signInUsingToken();

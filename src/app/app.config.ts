@@ -6,7 +6,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { PreloadAllModules, provideRouter, withInMemoryScrolling, withPreloading } from '@angular/router';
 import { provideFuse } from '@fuse';
 import { appRoutes } from 'app/app.routes';
-import { provideAuth } from 'app/core/auth/auth.provider';
+
 import { mockApiServices } from 'app/mock-api';
 import { provideIcons } from './core/icons/icons.provider';
 
@@ -41,7 +41,7 @@ export const appConfig: ApplicationConfig = {
 
 
         // Fuse
-        provideAuth(),
+ 
         provideIcons(),
         provideFuse({
             mockApi: {

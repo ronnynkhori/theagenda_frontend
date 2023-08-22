@@ -16,6 +16,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { Router } from '@angular/router';
 import { UserService } from 'app/core/user/user.service';
 import { User } from 'app/core/user/user.types';
+import { user } from 'app/mock-api/common/user/data';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -40,7 +41,7 @@ export class UserComponent implements OnInit, OnDestroy {
     /* eslint-enable @typescript-eslint/naming-convention */
 
     @Input() showAvatar: boolean = true;
-    user: User;
+    user: User = user;
 
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -66,7 +67,7 @@ export class UserComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((user: User) => {
                 this.user = user;
-
+                console.log("user", this.user)
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });

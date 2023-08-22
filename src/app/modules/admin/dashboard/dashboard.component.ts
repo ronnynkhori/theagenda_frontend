@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApexOptions } from 'apexcharts';
 import { Subject, takeUntil } from 'rxjs';
@@ -7,19 +7,11 @@ import { DashboardService } from './dashboard.service';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
-})
-export class DashboardComponent {
+  styleUrls: ['./dashboard.component.scss'],
 
-  chartVisitors: ApexOptions;
-  chartConversions: ApexOptions;
-  chartImpressions: ApexOptions;
-  chartVisits: ApexOptions;
-  chartVisitorsVsPageViews: ApexOptions;
-  chartNewVsReturning: ApexOptions;
-  chartGender: ApexOptions;
-  chartAge: ApexOptions;
-  chartLanguage: ApexOptions;
+})
+export class DashboardComponent implements OnInit {
+
   data: any;
 
   private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -28,7 +20,6 @@ export class DashboardComponent {
    * Constructor
    */
   constructor(
-      private _analyticsService: DashboardService,
       private _router: Router
   )
   {
