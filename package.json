@@ -1,15 +1,12 @@
 {
-    "name": "fuse-angular",
-    "version": "18.0.0",
-    "description": "Fuse - Angular Admin Template and Starter Project",
-    "author": "https://themeforest.net/user/srcn",
-    "license": "https://themeforest.net/licenses/standard",
-    "private": true,
+    "name": "theagenda",
+    "version": "0.0.0",
+    "description": "",
     "scripts": {
         "ng": "ng",
         "start": "ng serve",
         "build": "ng build",
-        "build-prod": "ng build --configuration production",
+        "buildDO": "ng build --configuration=DO --base-href /theagenda",
         "watch": "ng build --watch --configuration development",
         "test": "ng test"
     },
