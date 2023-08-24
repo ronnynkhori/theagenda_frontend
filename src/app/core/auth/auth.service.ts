@@ -58,18 +58,23 @@ export class AuthService
 
     signIn(credentials: { email: string; password: string }): Observable<any> {
         if (this._authenticated) {
-            return throwError('User is already logged in.');
+          return throwError('User is already logged in.');
         }
-    
+      
         return this._httpClient.post(SIGIN, credentials).pipe(
-            tap((response: any) => {
-                console.log("response", response);
-                this.accessToken = response.accessToken;
-                this._authenticated = true;
-                this._userService.user = response;
-            })
+          tap((response: any) => {
+            console.log("response", response);
+            this.accessToken = response.accessToken;
+            this._authenticated = true;
+            this._userService.user = response;
+          }),
+          catchError((error) => {
+            // Handle error here (log, show message, etc.)
+            console.error('Authentication error:', error);
+            return throwError('Authentication failed.');
+          })
         );
-    }
+      }
     
     /**
      * Sign in using the access token
