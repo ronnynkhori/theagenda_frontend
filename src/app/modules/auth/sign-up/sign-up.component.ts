@@ -53,11 +53,11 @@ export class AuthSignUpComponent implements OnInit
     {
         // Create the form
         this.signUpForm = this._formBuilder.group({
-                name      : ['', Validators.required],
+                firstname      : ['', Validators.required],
+                lastname      : ['', Validators.required],
                 email     : ['', [Validators.required, Validators.email]],
                 password  : ['', Validators.required],
                 confirmPassword  : ['', Validators.required],
-                phonenumber   : [''],
                 agreements: ['', Validators.requiredTrue],
             },
         );
@@ -84,31 +84,39 @@ export class AuthSignUpComponent implements OnInit
         // Hide the alert
         this.showAlert = false;
 
-        // Sign up
-        this._authService.signUp(this.signUpForm.value)
-            .subscribe(
-                (response) =>
-                {
-                    // Navigate to the confirmation required page
-                    this._router.navigateByUrl('/confirmation-required');
-                },
-                (response) =>
-                {
-                    // Re-enable the form
-                    this.signUpForm.enable();
 
-                    // Reset the form
-                    this.signUpNgForm.resetForm();
+        const user = this.signUpForm.value;
+        user.role = "USER"
 
-                    // Set the alert
-                    this.alert = {
-                        type   : 'error',
-                        message: 'Something went wrong, please try again.',
-                    };
+        this._authService.signUp(user).subscribe({
+            next:(next: any)=>{
+                this.alert = {
+                    type   : 'success',
+                    message: 'Account Successfully Created.',
+                };
 
-                    // Show the alert
-                    this.showAlert = true;
-                },
-            );
+                console.log(next);
+
+                // Show the alert
+                this.showAlert = true;
+            },
+            error:(error:any)=>{
+
+                console.log(error)
+                this.signUpForm.enable();
+
+                // Reset the form
+                this.signUpNgForm.resetForm();
+                this.alert = {
+                    type   : 'error',
+                    message: 'Something went wrong, please try again.',
+                };
+
+                // Show the alert
+                this.showAlert = true;
+
+            }
+        })
+          
     }
 }
