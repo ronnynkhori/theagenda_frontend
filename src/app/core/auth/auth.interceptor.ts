@@ -10,7 +10,7 @@ import { catchError, Observable, throwError } from 'rxjs';
  * @param req
  * @param next
  */
-export const authInterceptor = (req: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> =>
+export const authInterceptor = (req: HttpRequest<any>, next: HttpHandlerFn): Observable<HttpEvent<any>> =>
 {
     const authService = inject(AuthService);
 
