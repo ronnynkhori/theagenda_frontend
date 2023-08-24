@@ -6,14 +6,15 @@ import { environment } from 'environments/environment';
 import { catchError, Observable, of, switchMap, tap, throwError } from 'rxjs';
 
 
-const SIGIN = environment.apiBaseUrl + '/api/auth/v1/login'
-const SIGUP = environment.apiBaseUrl + '/api/auth/v1/register'
-const RESETPASSWORD = environment.apiBaseUrl + '/api/auth/v1/resetpassword'
-const FORGOTPASSWORD = environment.apiBaseUrl + '/api/auth/v1/forgotpassword'
 
 @Injectable({providedIn: 'root'})
 export class AuthService
 {
+
+    private readonly SIGIN = environment.apiBaseUrl + '/api/auth/v1/login';
+  private readonly SIGUP = environment.apiBaseUrl + '/api/auth/v1/register';
+  private readonly RESETPASSWORD = environment.apiBaseUrl + '/api/auth/v1/resetpassword';
+  private readonly FORGOTPASSWORD = environment.apiBaseUrl + '/api/auth/v1/forgotpassword';
     private _authenticated: boolean = false;
 
     /**
@@ -61,7 +62,7 @@ export class AuthService
           return throwError('User is already logged in.');
         }
       
-        return this._httpClient.post(SIGIN, credentials).pipe(
+        return this._httpClient.post(this.SIGIN, credentials).pipe(
           tap((response: any) => {
             console.log("response", response);
             this.accessToken = response.accessToken;
@@ -138,7 +139,7 @@ export class AuthService
      */
     signUp(user: { name: string; email: string; password: string;}): Observable<any>
     {
-        return this._httpClient.post(SIGUP, user);
+        return this._httpClient.post(this.SIGUP, user);
     }
 
     /**
