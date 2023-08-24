@@ -10,7 +10,7 @@ import { catchError, Observable, of, switchMap, tap, throwError } from 'rxjs';
 @Injectable({providedIn: 'root'})
 export class AuthService
 {
-
+    private readonly HELLO = environment.apiBaseUrl + '/api/auth/v1/hello';
     private readonly SIGIN = environment.apiBaseUrl + '/api/auth/v1/login';
   private readonly SIGUP = environment.apiBaseUrl + '/api/auth/v1/register';
   private readonly RESETPASSWORD = environment.apiBaseUrl + '/api/auth/v1/resetpassword';
@@ -140,6 +140,11 @@ export class AuthService
     signUp(user: any): Observable<any>
     {
         return this._httpClient.post(this.SIGUP, user);
+    }
+
+    test(): Observable<any>
+    {
+        return this._httpClient.get(this.HELLO);
     }
 
     /**
