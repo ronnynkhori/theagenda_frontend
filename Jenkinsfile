@@ -35,8 +35,5 @@ pipeline {
         }
     }
 
-    post {
-        success { slackSend color:'good', message:'DEPLOYMENT SUCCESSFULL' }
-        failure { slackSend color:'danger', message:'DEPLOYMENT FAILED' }
-    }
+
 }
