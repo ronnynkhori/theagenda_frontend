@@ -8,20 +8,23 @@ export const defaultNavigation: FuseNavigationItem[] = [
         type : 'basic',
         icon : 'heroicons_outline:squares-2x2',
         link : '/dashboard'
-    }, {
+    },
+    {
+        id   : 'contacts',
+        title: 'Requests',
+        type : 'basic',
+        icon : 'heroicons_outline:user-group',
+        link : '/contacts'
+    },
+    
+    {
         id   : 'users',
         title: 'Users',
         type : 'basic',
         icon : 'heroicons_outline:users',
         link : '/users'
     },
-    {
-        id   : 'contacts',
-        title: 'Clients',
-        type : 'basic',
-        icon : 'heroicons_outline:user-group',
-        link : '/contacts'
-    },
+ 
     {
         id   : 'settings',
         title: 'Settings',

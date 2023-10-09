@@ -4,7 +4,7 @@ import { User } from 'app/core/user/user.types';
 import { environment } from 'environments/environment';
 import { map, Observable, ReplaySubject, tap } from 'rxjs';
 
-const GETALLUSERS = environment.apiBaseUrl + '/api/auth/v1/users/all';
+const GETALLUSERS = environment.apiBaseUrl + '/api/auth/v1/users';
 const GETUSERBYID = environment.apiBaseUrl + '/api/auth/v1/users/';
 const UPDATEUSERBYID = environment.apiBaseUrl + '/api/auth/v1/users/update/';
 const CREATEUSER = environment.apiBaseUrl + '/api/auth/v1/users/create';
@@ -75,6 +75,6 @@ export class UserService {
     }
 
     getUserById(userId: any): Observable<any>{
-        return this._httpClient.get(GETUSERBYID + `${userId}`).pipe();
+        return this._httpClient.get(GETUSERBYID + `${userId}`);
     }
 }

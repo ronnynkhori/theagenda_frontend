@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, filter, map, Observable, of, switchMap, take, tap, throwError } from 'rxjs';
 import { Contact, Country, Tag } from './contacts.types';
+import { environment } from 'environments/environment';
 
+const GETALLTASKS = environment.apiBaseUrl + '/api/tasks/v1/requests';
 
 @Injectable({
     providedIn: 'root'
@@ -15,70 +17,45 @@ export class ContactsService
     private _countries: BehaviorSubject<Country[] | null> = new BehaviorSubject(null);
     private _tags: BehaviorSubject<Tag[] | null> = new BehaviorSubject(null);
 
-    /**
-     * Constructor
-     */
+ 
     constructor(private _httpClient: HttpClient)
     {
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Accessors
-    // -----------------------------------------------------------------------------------------------------
 
-    /**
-     * Getter for contact
-     */
     get contact$(): Observable<Contact>
     {
         return this._contact.asObservable();
     }
 
-    /**
-     * Getter for contacts
-     */
+   
     get contacts$(): Observable<Contact[]>
     {
         return this._contacts.asObservable();
     }
 
-    /**
-     * Getter for countries
-     */
     get countries$(): Observable<Country[]>
     {
         return this._countries.asObservable();
     }
 
-    /**
-     * Getter for tags
-     */
+
     get tags$(): Observable<Tag[]>
     {
         return this._tags.asObservable();
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
 
-    /**
-     * Get contacts
-     */
-    getContacts(): Observable<Contact[]>
+    getContacts(): Observable<any>
     {
-        return this._httpClient.get<Contact[]>('api/apps/contacts/all').pipe(
+        return this._httpClient.get<any>(GETALLTASKS).pipe(
             tap((contacts) => {
                 this._contacts.next(contacts);
             })
         );
     }
 
-    /**
-     * Search contacts with given query
-     *
-     * @param query
-     */
+
     searchContacts(query: string): Observable<Contact[]>
     {
         return this._httpClient.get<Contact[]>('api/apps/contacts/search', {
@@ -90,9 +67,7 @@ export class ContactsService
         );
     }
 
-    /**
-     * Get contact by id
-     */
+ 
     getContactById(id: string): Observable<Contact>
     {
         return this._contacts.pipe(

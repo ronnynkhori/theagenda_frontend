@@ -1,65 +1,91 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Inject,
+    OnDestroy,
+    OnInit,
+    ViewChild,
+    ViewEncapsulation,
+} from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UntypedFormControl } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
-import { filter, fromEvent, Observable, Subject, switchMap, takeUntil } from 'rxjs';
+import {
+    filter,
+    fromEvent,
+    Observable,
+    Subject,
+    switchMap,
+    takeUntil,
+} from 'rxjs';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { ContactsService } from '../contacts.service';
 import { Contact, Country } from '../contacts.types';
-
+import { UserService } from 'app/core/user/user.service';
 
 @Component({
-    selector       : 'contacts-list',
-    templateUrl    : './list.component.html',
-    encapsulation  : ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'contacts-list',
+    templateUrl: './list.component.html',
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ContactsListComponent implements OnInit, OnDestroy
-{
-    @ViewChild('matDrawer', {static: true}) matDrawer: MatDrawer;
+export class ContactsListComponent implements OnInit, OnDestroy {
+    @ViewChild('matDrawer', { static: true }) matDrawer: MatDrawer;
 
-    contacts$: Observable<Contact[]>;
+    contacts$: Observable<any>;
 
-    contactsCount: number = 0;
+    requestsCount: number = 0;
     contactsTableColumns: string[] = ['name', 'email', 'phoneNumber', 'job'];
     countries: Country[];
     drawerMode: 'side' | 'over';
     searchInputControl: UntypedFormControl = new UntypedFormControl();
     selectedContact: Contact;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
+    usersMap: Map<number, any> = new Map<number, any>();
+    user: any;
 
-    /**
-     * Constructor
-     */
     constructor(
         private _activatedRoute: ActivatedRoute,
         private _changeDetectorRef: ChangeDetectorRef,
         private _contactsService: ContactsService,
+        private userService: UserService,
         @Inject(DOCUMENT) private _document: any,
         private _router: Router,
         private _fuseMediaWatcherService: FuseMediaWatcherService
-    )
-    {
-    }
+    ) {}
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Lifecycle hooks
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * On init
-     */
-    ngOnInit(): void
-    {
+   async ngOnInit() {
         // Get the contacts
         this.contacts$ = this._contactsService.contacts$;
         this._contactsService.contacts$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((contacts: Contact[]) => {
+            .subscribe(async (contacts: any) => {
+                console.log('my contacts', contacts);
 
                 // Update the counts
-                this.contactsCount = contacts.length;
+                this.requestsCount = contacts.length;
+
+           // Fetch and set user information for each contact
+           for (const contact of contacts) {
+            const userIdToRetrieve = contact.userId;
+            console.log('userIdToRetrieve', userIdToRetrieve);
+           this.userService.getUserById(userIdToRetrieve).subscribe({
+            next:(res:any)=>{
+                console.log(res);
+                contact.user = res;
+            },
+            error:(err:any)=> {
+                console.log(err,"dd"); 
+            },
+           });
+        
+              // Mark for check
+              this._changeDetectorRef.markForCheck();
+            } 
+  
+          console.log("Contacts with user information:", contacts);
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
@@ -68,43 +94,39 @@ export class ContactsListComponent implements OnInit, OnDestroy
         // Get the contact
         this._contactsService.contact$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((contact: Contact) => {
-
+            .subscribe((contact: any) => {
                 // Update the selected contact
                 this.selectedContact = contact;
+                console.log("kmk", this.selectedContact)
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
 
-        // Get the countries
-        this._contactsService.countries$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((countries: Country[]) => {
+        // // Get the countries
+        // this._contactsService.countries$
+        //     .pipe(takeUntil(this._unsubscribeAll))
+        //     .subscribe((countries: Country[]) => {
+        //         // Update the countries
+        //         this.countries = countries;
 
-                // Update the countries
-                this.countries = countries;
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
+        //         // Mark for check
+        //         this._changeDetectorRef.markForCheck();
+        //     });
 
         // Subscribe to search input field value changes
         this.searchInputControl.valueChanges
             .pipe(
                 takeUntil(this._unsubscribeAll),
-                switchMap(query =>
-
+                switchMap((query) =>
                     // Search
                     this._contactsService.searchContacts(query)
                 )
             )
             .subscribe();
 
-        // Subscribe to MatDrawer opened change
         this.matDrawer.openedChange.subscribe((opened) => {
-            if ( !opened )
-            {
+            if (!opened) {
                 // Remove the selected contact when drawer closed
                 this.selectedContact = null;
 
@@ -113,18 +135,13 @@ export class ContactsListComponent implements OnInit, OnDestroy
             }
         });
 
-        // Subscribe to media changes
         this._fuseMediaWatcherService.onMediaChange$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe(({matchingAliases}) => {
-
+            .subscribe(({ matchingAliases }) => {
                 // Set the drawerMode if the given breakpoint is active
-                if ( matchingAliases.includes('lg') )
-                {
+                if (matchingAliases.includes('lg')) {
                     this.drawerMode = 'side';
-                }
-                else
-                {
+                } else {
                     this.drawerMode = 'over';
                 }
 
@@ -132,13 +149,13 @@ export class ContactsListComponent implements OnInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
 
-        // Listen for shortcuts
         fromEvent(this._document, 'keydown')
             .pipe(
                 takeUntil(this._unsubscribeAll),
-                filter<KeyboardEvent>(event =>
-                    (event.ctrlKey === true || event.metaKey) // Ctrl or Cmd
-                    && (event.key === '/') // '/'
+                filter<KeyboardEvent>(
+                    (event) =>
+                        (event.ctrlKey === true || event.metaKey) && // Ctrl or Cmd
+                        event.key === '/' // '/'
                 )
             )
             .subscribe(() => {
@@ -146,56 +163,27 @@ export class ContactsListComponent implements OnInit, OnDestroy
             });
     }
 
-    /**
-     * On destroy
-     */
-    ngOnDestroy(): void
-    {
-        // Unsubscribe from all subscriptions
+    ngOnDestroy(): void {
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * On backdrop clicked
-     */
-    onBackdropClicked(): void
-    {
-        // Go back to the list
-        this._router.navigate(['./'], {relativeTo: this._activatedRoute});
-
-        // Mark for check
+    onBackdropClicked(): void {
+        this._router.navigate(['./'], { relativeTo: this._activatedRoute });
         this._changeDetectorRef.markForCheck();
     }
 
-    /**
-     * Create contact
-     */
-    createContact(): void
-    {
-        // Create the contact
+    createContact(): void {
         this._contactsService.createContact().subscribe((newContact) => {
+            this._router.navigate(['./', newContact.id], {
+                relativeTo: this._activatedRoute,
+            });
 
-            // Go to the new contact
-            this._router.navigate(['./', newContact.id], {relativeTo: this._activatedRoute});
-
-            // Mark for check
             this._changeDetectorRef.markForCheck();
         });
     }
 
-    /**
-     * Track by function for ngFor loops
-     *
-     * @param index
-     * @param item
-     */
-    trackByFn(index: number, item: any): any
-    {
+    trackByFn(index: number, item: any): any {
         return item.id || index;
     }
 }

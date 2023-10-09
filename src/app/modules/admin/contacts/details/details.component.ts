@@ -27,7 +27,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
     tags: Tag[];
     tagsEditMode: boolean = false;
     filteredTags: Tag[];
-    contact: Contact;
+    contact: any;
     contactForm: UntypedFormGroup;
     contacts: Contact[];
     countries: Country[];
@@ -82,7 +82,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
         // Get the contacts
         this._contactsService.contacts$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((contacts: Contact[]) => {
+            .subscribe((contacts: any) => {
                 this.contacts = contacts;
 
                 // Mark for check
@@ -92,7 +92,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
         // Get the contact
         this._contactsService.contact$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((contact: Contact) => {
+            .subscribe((contact: any) => {
 
                 // Open the drawer in case it is closed
                 this._contactsListComponent.matDrawer.open();
@@ -220,13 +220,7 @@ export class ContactsDetailsComponent implements OnInit, OnDestroy
         }
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
 
-    /**
-     * Close the drawer
-     */
     closeDrawer(): Promise<MatDrawerToggleResult>
     {
         return this._contactsListComponent.matDrawer.close();

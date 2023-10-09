@@ -17,7 +17,6 @@ import { CommonModule } from '@angular/common';
     ],
     imports     : [
         RouterModule.forChild(contactsRoutes),
-       // FuseFindByKeyPipeModule,
        CommonModule,
        FormsModule,
         SharedModule

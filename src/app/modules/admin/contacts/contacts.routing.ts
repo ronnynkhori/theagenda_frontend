@@ -25,11 +25,7 @@ export const contactsRoutes: Route[] = [
                     {
                         path         : ':id',
                         component    : ContactsDetailsComponent,
-                        resolve      : {
-                            contact  : ContactsContactResolver,
-                            countries: ContactsCountriesResolver
-                        },
-                        canDeactivate: [CanDeactivateContactsDetails]
+                      
                     }
                 ]
             }
