@@ -103,16 +103,7 @@ export class ContactsListComponent implements OnInit, OnDestroy {
                 this._changeDetectorRef.markForCheck();
             });
 
-        // // Get the countries
-        // this._contactsService.countries$
-        //     .pipe(takeUntil(this._unsubscribeAll))
-        //     .subscribe((countries: Country[]) => {
-        //         // Update the countries
-        //         this.countries = countries;
 
-        //         // Mark for check
-        //         this._changeDetectorRef.markForCheck();
-        //     });
 
         // Subscribe to search input field value changes
         this.searchInputControl.valueChanges

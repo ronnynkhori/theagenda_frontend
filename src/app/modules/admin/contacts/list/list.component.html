@@ -1,23 +1,13 @@
 <div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
-
-    <mat-drawer-container
-        class="flex-auto h-full bg-card dark:bg-transparent"
-        (backdropClick)="onBackdropClicked()">
+    <mat-drawer-container class="flex-auto h-full bg-card dark:bg-transparent" (backdropClick)="onBackdropClicked()">
         <!-- Drawer -->
-        <mat-drawer
-            class="w-full md:w-160 dark:bg-gray-900"
-            [mode]="drawerMode"
-            [opened]="false"
-            [position]="'end'"
-            [disableClose]="true"
-            #matDrawer>
+        <mat-drawer class="w-full md:w-160 dark:bg-gray-900" [mode]="drawerMode" [opened]="false" [position]="'end'" [disableClose]="true" #matDrawer>
             <router-outlet></router-outlet>
         </mat-drawer>
 
         <mat-drawer-content class="flex flex-col">
             <!-- Main -->
             <div class="flex-auto">
-
                 <!-- Header -->
                 <div class="flex flex-col sm:flex-row md:flex-col flex-auto justify-between py-8 px-6 md:px-8 border-b">
                     <!-- Title -->
@@ -27,30 +17,16 @@
                             <ng-container *ngIf="requestsCount > 0">
                                 {{requestsCount}}
                             </ng-container>
-                            {{requestsCount | i18nPlural: {
-                            '=0'   : 'No requests',
-                            '=1'   : 'request',
-                            'other': 'requests'
-                        } }}
+                            {{requestsCount | i18nPlural: {'=0': 'No requests', '=1': 'request', 'other': 'requests'} }}
                         </div>
                     </div>
-
                     <!-- Main actions -->
                     <div class="flex items-center mt-4 sm:mt-0 md:mt-4">
                         <!-- Search -->
                         <div class="flex-auto">
-                            <mat-form-field
-                                class="fuse-mat-dense fuse-mat-rounded w-full min-w-50"
-                                subscriptSizing="dynamic">
-                                <mat-icon
-                                    class="icon-size-5"
-                                    matPrefix
-                                    [svgIcon]="'heroicons_solid:magnifying-glass'"></mat-icon>
-                                <input
-                                    matInput
-                                    [formControl]="searchInputControl"
-                                    [autocomplete]="'off'"
-                                    [placeholder]="'Search requests'">
+                            <mat-form-field class="fuse-mat-dense fuse-mat-rounded w-full min-w-50" subscriptSizing="dynamic">
+                                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:magnifying-glass'"></mat-icon>
+                                <input matInput [formControl]="searchInputControl" [autocomplete]="'off'" [placeholder]="'Search requests'">
                             </mat-form-field>
                         </div>
                     </div>
@@ -62,26 +38,23 @@
                         <ng-container *ngIf="contacts.length; else noContacts">
                             <ng-container *ngFor="let contact of contacts; let i = index; trackBy: trackByFn">
                                 <!-- Group -->
-                                <ng-container *ngIf="i === 0 || contact.user?.lastname.charAt(0) !== contacts[i - 1].user?.lastname.charAt(0)">
+                                <ng-container *ngIf="i === 0 || contact.lastname.charAt(0) !== contacts[i - 1].lastname.charAt(0)">
                                     <div class="z-10 sticky top-0 -mt-px px-6 me-2 ms-1 py-1 md:px-8 border-t border-b font-medium uppercase text-secondary bg-gray-50 dark:bg-gray-900">
-                                        {{contact.user?.lastname.charAt(0)}}m
+                                        {{contact.lastname.charAt(0)}} 
                                     </div>
                                 </ng-container>
                                 <!-- Contact -->
-                                <a
-                                    class="z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer border-b"
-                                    [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !selectedContact || selectedContact.id !== contact.id,
-                                                'bg-primary-50 dark:bg-hover': selectedContact && selectedContact.id === contact.id}"
-                                    [routerLink]="['./', contact.id]">{{contact.id | json}}
+                                <a class="z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer border-b" [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !selectedContact || selectedContact.id !== contact.id, 'bg-primary-50 dark:bg-hover': selectedContact && selectedContact.id === contact.id}" [routerLink]="['/contacts', contact.id]">
+                                    <span class="px-2">{{contact.id | json}} </span>
                                     <div class="flex flex-0 items-center justify-center w-10 h-10 rounded-full overflow-hidden">
                                         <ng-container>
-                                            <div class="flex items-center justify-center  w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
-                                                {{contact.user?.lastname.charAt(0)}}
+                                            <div class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                                                {{contact.firstname.charAt(0)}} {{contact.lastname.charAt(0)}}
                                             </div>
                                         </ng-container>
                                     </div>
                                     <div class="min-w-0 ml-4">
-                                        <div class="font-medium leading-5 truncate">{{contact?.phoneNumber}} {{contact.user?.firstname}}</div>
+                                        <div class="font-medium leading-5 truncate">{{contact?.phoneNumber}} {{contact?.firstname}}</div>
                                         <div class="leading-5 truncate text-secondary">{{contact?.description}}</div>
                                     </div>
                                 </a>
@@ -93,13 +66,8 @@
                     <ng-template #noContacts>
                         <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">There are no requests!</div>
                     </ng-template>
-
                 </div>
-
             </div>
-
         </mat-drawer-content>
-
     </mat-drawer-container>
-
 </div>
