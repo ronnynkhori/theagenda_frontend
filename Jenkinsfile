@@ -23,13 +23,13 @@ pipeline {
             steps {
                         sshagent(credentials: ['DigitalOceanSSH']) {
                             // Create the /theagenda directory if it doesn't exist
-                            sh "ssh -o StrictHostKeyChecking=no rnkhori@164.92.135.84 'mkdir -p /home/rnkhori/theagenda/web'"
+                            sh "ssh -o StrictHostKeyChecking=no rnkhori@159.223.194.235 'mkdir -p /home/rnkhori/theagenda/web'"
 
-                            sh 'scp -r -o StrictHostKeyChecking=no dist rnkhori@164.92.135.84:~/theagenda/web'
-                            sh 'scp -r -o StrictHostKeyChecking=no Dockerfile rnkhori@164.92.135.84:~/theagenda/web'
-                            sh 'scp -r -o StrictHostKeyChecking=no nginx.conf rnkhori@164.92.135.84:~/theagenda/web'
+                            sh 'scp -r -o StrictHostKeyChecking=no dist rnkhori@159.223.194.235:~/theagenda/web'
+                            sh 'scp -r -o StrictHostKeyChecking=no Dockerfile rnkhori@159.223.194.235:~/theagenda/web'
+                            sh 'scp -r -o StrictHostKeyChecking=no nginx.conf rnkhori@159.223.194.235:~/theagenda/web'
 
-                            sh "ssh rnkhori@164.92.135.84 'cd ~/theagenda && docker compose up -d --force-recreate --build web'"
+                            sh "ssh rnkhori@159.223.194.235 'cd ~/theagenda && docker compose up -d --force-recreate --build web'"
                         }
             }
         }
