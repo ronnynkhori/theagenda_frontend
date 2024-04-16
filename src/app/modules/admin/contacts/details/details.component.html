@@ -69,7 +69,7 @@
                     <ng-container *ngIf="contact?.images.length > 0">
                         <div class="flex flex-grow gap-2">
                             <div *ngFor="let image of contact?.images" class="shadow-sm p-2 border rounded-sm" style="width: 100px; height: 150px;">
-                                <img [src]="'https://backend.theagenda.co.bw/' + (image.path | convertPath)" alt="Image">
+                                <img [src]="'data:image/png;base64,' + image.base64" alt="Image" >
                             </div>
                         </div>
                     </ng-container>
