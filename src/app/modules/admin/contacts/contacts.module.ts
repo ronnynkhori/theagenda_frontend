@@ -8,18 +8,20 @@ import { ContactsDetailsComponent } from './details/details.component';
 import { ContactsListComponent } from './list/list.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ConvertPathPipe } from 'app/shared/convert-path.pipe';
 
 @NgModule({
     declarations: [
         ContactsComponent,
         ContactsListComponent,
-        ContactsDetailsComponent
+        ContactsDetailsComponent,
+        ConvertPathPipe,
     ],
     imports     : [
         RouterModule.forChild(contactsRoutes),
        CommonModule,
        FormsModule,
-        SharedModule
+       SharedModule
     ],
     providers   : [
         {

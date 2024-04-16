@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialsModule } from './materials.module';
 import { DashboardComponent } from 'app/modules/admin/dashboard/dashboard.component';
+import { ConvertPathPipe } from './convert-path.pipe';
 
 
 @NgModule({
